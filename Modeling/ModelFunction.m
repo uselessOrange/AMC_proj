@@ -1,11 +1,11 @@
-function y = ModelFunction(x,Ta,R,C,t)
+function y = ModelFunction(x,Ta,G,R,C,t)
 % y = ModelFunction(x,Ta,R,C)
 % x and Ta are vectors of the same lenght
 % R - frige walls thermal resistance
 % C - Heat capacity of the fridge content
 A=-1/(R*C);
 B=[1/C,1/(R*C)];
-C=1;
+C=G;
 D=0;
 
 sys=ss(A,B,C,D);
