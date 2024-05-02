@@ -1,8 +1,9 @@
 function data_interp = InterpolateData(data,threshold,x)
 % data_interp = InterpolateData(data,threshold,x)
+%threshlod = [lower,upper];
 %Interpolates data by remooving samples below a threshold and replacing
 %them with a linear function between two 
-error_indices = find(data <= threshold);
+error_indices = find(data >= threshold(1) & data <= threshold(2));
 non_error_indices = setdiff(1:numel(data), error_indices);
 
 % Linear interpolation needs two points to interpolate between. If the last

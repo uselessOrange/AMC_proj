@@ -20,10 +20,15 @@ C=10;
 Ta=21;
 Ta=Ta*ones(N,1);
 %% Adjustable parameters:
-MaxRangeR = [-100 100];  % Range of parameters for optimization
-MaxRangeC = [-100 100];
-MaxRangeG = [-100 100];
-MaxRangeTa = [-100 100];
+MaxRangeR = [-1000 1000];  % Range of parameters for optimization
+MaxRangeC = [-1000 1000];
+MaxRangeG = [-1000 1000];
+MaxRangeTa = [-1000 1000];
+
+MaxRange = [MaxRangeR;MaxRangeC;MaxRangeG;MaxRangeTa];
+
+
+
  
 MaxSteps = 5000;         % How many iterations do we perform?
 FunctionPlot = 0;       % change to 0 If you want to get rid of the underlying function plot 
@@ -40,12 +45,17 @@ InitialRangeR = MaxRangeR;      % This is the range from which we can draw point
 InitialRangeC = MaxRangeC;
 InitialRangeG = MaxRangeG;
 InitialRangeTa = MaxRangeTa;
+
+InitialRange = MaxRange;
+
 %% Storing of a best solution
     CurrentMin = 50000;
     ResultR = 1;
     ResultC = 1;
     ResultG = 1;
     ResultTa = 1;
+    n=4;
+    Result=ones(n,1);
 
 %% The main optimization loop
     EndingCondition = 0;
@@ -53,7 +63,7 @@ InitialRangeTa = MaxRangeTa;
     tic;
  
     
-    InitialStep = 100; % Exploration/exploitation balance parameters:
+    InitialStep = 1000; % Exploration/exploitation balance parameters:
     P1 = 2;
     P2 = 300;
 
@@ -64,6 +74,8 @@ InitialRangeTa = MaxRangeTa;
     NewG = InitialRangeG(1) +  rand()*(InitialRangeG(2) - InitialRangeG(1));
     NewTa = InitialRangeTa(1) +  rand()*(InitialRangeTa(2) - InitialRangeTa(1));
 
+    New= InitialRange(1,:) +  rand()*(InitialRange(2,:) - InitialRange(1,:));
+
     for repetition = 1:1
     
         CurrentMin = 50000;
@@ -71,6 +83,8 @@ ResultR = 1;
 ResultC = 1;
 ResultG = 1;
 ResultTa = 1;
+
+Result=ones(n,1);
 EndingCondition = 0;
 iter = 0;
 
@@ -82,6 +96,8 @@ iter = 0;
         NewC = ResultC+Step(iter)*randn();
         NewG = ResultG+Step(iter)*randn();
         NewTa = ResultTa+Step(iter)*randn();
+
+        New = Result+Step(iter)*rand(n,1);
         % Check for constraints (they could be different than the range
         % from which we draw our solutions)
         NewR = min(MaxRangeR(2),max(NewR,MaxRangeR(1)));

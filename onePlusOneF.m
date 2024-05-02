@@ -6,25 +6,19 @@
 clear
 load('data.mat')
 %% 
-compressor = data.compressor;
-SondaSterujca = data.SondaSterujca;
-x=compressor;
-y=SondaSterujca;
-[x,~]=GetRidOfNans(x);
-[y,~]=GetRidOfNans(y);
+[x,Ta,y,t]=modelData2Example();
+x0=y(1);
+
+
 %% 
 N=length(x);
-t = linspace(0,N/0.5,N);
 R=400;
 C=10;
-Ta=21;
-Ta=Ta*ones(N,1);
 %% Adjustable parameters:
-MaxRangeR = [-100 100];  % Range of parameters for optimization
-MaxRangeC = [-100 100];
+MaxRangeR = [-200 200];  % Range of parameters for optimization
+MaxRangeC = [-200 200];
 MaxRangeG = [-100 100];
-MaxRangeTa = [-100 100];
- 
+
 MaxSteps = 5000;         % How many iterations do we perform?
 FunctionPlot = 0;       % change to 0 If you want to get rid of the underlying function plot 
 PointPlot = 0;          % Change to 0 if you want to get rid of the visualization
@@ -39,14 +33,11 @@ FunctionPlotQuality = 0.05;    % Quality of function interpolation. Lower for a 
 InitialRangeR = MaxRangeR;      % This is the range from which we can draw points.
 InitialRangeC = MaxRangeC;
 InitialRangeG = MaxRangeG;
-InitialRangeTa = MaxRangeTa;
 %% Storing of a best solution
     CurrentMin = 50000;
     ResultR = 1;
     ResultC = 1;
     ResultG = 1;
-    ResultTa = 1;
-
 %% The main optimization loop
     EndingCondition = 0;
     iter = 0;
@@ -62,7 +53,6 @@ InitialRangeTa = MaxRangeTa;
     NewR = InitialRangeR(1) +  rand()*(InitialRangeR(2) - InitialRangeR(1));
     NewC = InitialRangeC(1) +  rand()*(InitialRangeC(2) - InitialRangeC(1));
     NewG = InitialRangeG(1) +  rand()*(InitialRangeG(2) - InitialRangeG(1));
-    NewTa = InitialRangeTa(1) +  rand()*(InitialRangeTa(2) - InitialRangeTa(1));
 
     for repetition = 1:1
     
@@ -70,7 +60,6 @@ InitialRangeTa = MaxRangeTa;
 ResultR = 1;
 ResultC = 1;
 ResultG = 1;
-ResultTa = 1;
 EndingCondition = 0;
 iter = 0;
 
@@ -81,32 +70,26 @@ iter = 0;
         NewR = ResultR+Step(iter)*randn();
         NewC = ResultC+Step(iter)*randn();
         NewG = ResultG+Step(iter)*randn();
-        NewTa = ResultTa+Step(iter)*randn();
         % Check for constraints (they could be different than the range
         % from which we draw our solutions)
         NewR = min(MaxRangeR(2),max(NewR,MaxRangeR(1)));
         NewC = min(MaxRangeC(2),max(NewC,MaxRangeC(1)));
-        NewG = min(MaxRangeG(2),max(NewG,MaxRangeG(1)));
-        NewTa = min(MaxRangeTa(2),max(NewTa,MaxRangeTa(1)));
+        NewG = min(MaxRangeC(2),max(NewG,MaxRangeC(1)));
         if NewR == 0 
             NewR=1;
         end
         if NewC == 0
             NewC=1;
         end
-        if NewG == 0
+        if NewG == 0 
             NewG=1;
-        end
-        if NewTa == 0
-            NewTa=1;
         end
  
 % If you'd like to provide function as a 2D image or use here any other objective function, 
 % following line needs to be modified. The 0 passed to the function denotes the fact,
 % that the function is constant in time.
-        Ta=NewTa;
-        Ta=Ta*ones(N,1);
-        y1=ModelFunction(x,Ta,NewG,NewR,NewC,t);
+
+        y1=ModelFunction(-x',Ta',NewG,NewR,NewC,t,x0)';
         CurrentValue = rmse(y,y1);
                
         
@@ -115,7 +98,6 @@ iter = 0;
             ResultR = NewR;
             ResultC = NewC;
             ResultG = NewG;
-            ResultTa = NewTa;
             
         
         
@@ -156,9 +138,9 @@ meanjpjvs=mean(Results);
 stdjpjvs=std(Results);
 disp(meanjpjvs);
 disp(stdjpjvs);
-Ta=ResultTa;
-Ta=Ta*ones(N,1);
-y1=ModelFunction(-x,Ta,ResultG,ResultR,ResultC,t);
+
+y1=ModelFunction(-x',Ta',ResultG,ResultR,ResultC,t,x0);
 figure
-plot(y);hold on
-plot(y1);hold off
+plot(t/(60*60),y);hold on
+plot(t/(60*60),y1);hold off
+legend('Measurement','Model')
