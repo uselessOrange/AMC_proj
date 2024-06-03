@@ -1,5 +1,5 @@
 function y = ModelFunction(x,Ta,G,R,C,t,x0)
-% y = ModelFunction(x,Ta,R,C)
+% y = ModelFunction(x,Ta,G,R,C,t,x0)
 % x and Ta are vectors of the same lenght
 % R - frige walls thermal resistance
 % C - Heat capacity of the fridge content

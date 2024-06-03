@@ -1,5 +1,5 @@
 clear    
-InitialStep = 1000; % Exploration/exploitation balance parameters:
+InitialStep = 100; % Exploration/exploitation balance parameters:
     P1 = 2;
     P2 = 300;
     MaxSteps=5000;

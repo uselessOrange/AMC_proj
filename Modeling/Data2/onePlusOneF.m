@@ -15,9 +15,9 @@ N=length(x);
 R=400;
 C=10;
 %% Adjustable parameters:
-MaxRangeR = [-200 200];  % Range of parameters for optimization
-MaxRangeC = [-200 200];
-MaxRangeG = [-100 100];
+MaxRangeR = [1 200];  % Range of parameters for optimization
+MaxRangeC = [1 200];
+MaxRangeG = [0.1 100];
 
 MaxSteps = 5000;         % How many iterations do we perform?
 FunctionPlot = 0;       % change to 0 If you want to get rid of the underlying function plot 
@@ -89,7 +89,7 @@ iter = 0;
 % following line needs to be modified. The 0 passed to the function denotes the fact,
 % that the function is constant in time.
 
-        y1=ModelFunction(-x',Ta',NewG,NewR,NewC,t,x0)';
+        y1=ModelFunction(x',Ta',NewG,NewR,NewC,t,x0)';
         CurrentValue = rmse(y,y1);
                
         
