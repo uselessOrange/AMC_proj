@@ -6,11 +6,10 @@ function simData = fridge_fixed_step(Ta,G,R,c,t,x0)
 % R=48.9120; 
 % c=114.2959;
 
-A = -1/(R*c);                  % n×n   ← copy from your State‑Space block
-B = [G,1/R];                  % n×2
-C = 1/c;                  % 1×n
-D = [0,0];                  % 1×2
-
+A=-1/(R*c);
+B=[G/c,1/(R*c)];
+C=1;
+D=[0,0];
 
 dt     = t(2)-t(1);                % time step [s]
 Tend   = t(end);           % simulate 2 hours
