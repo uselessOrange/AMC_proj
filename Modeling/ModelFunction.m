@@ -4,7 +4,7 @@ function y = ModelFunction(x,Ta,G,R,C,t,x0)
 % R - frige walls thermal resistance
 % C - Heat capacity of the fridge content
 A=-1/(R*C);
-B=[G/C,1/(R*C)];
+B=[G,1/(R)];
 C=1;
 D=0;
 
